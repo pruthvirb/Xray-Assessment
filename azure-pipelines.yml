@@ -13,13 +13,14 @@ steps:
 - task: JFrogGenericArtifacts@1
   inputs:
     command: 'Download'
+    connection: 'hts2-arti-oidc'
     specSource: 'taskConfiguration'
     fileSpec: |
       {
         "files": [
           {
-            "pattern": "pruthvi-generic-local/*.gpg",
-                  "target": "./"
+                 "pattern": "pruthvi-generic-local/*.gpg",
+                        "target": "./"
           }
         ]
       }
@@ -27,3 +28,4 @@ steps:
     buildName: '$(Build.DefinitionName)'
     buildNumber: '$(Build.BuildNumber)'
     failNoOp: true
+
