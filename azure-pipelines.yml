@@ -19,7 +19,7 @@ steps:
       {
         "files": [
           {
-            "pattern": "pruthvi-generic-local/*.gpg",
+            "pattern": "pruthvi-generic-local/jfrog-rpms.repo",
                               "target": "./"
           }
         ]
