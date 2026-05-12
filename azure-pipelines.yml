@@ -10,6 +10,20 @@ pool:
   vmImage: ubuntu-latest
 
 steps:
+
+- task: JfrogCliV2@1
+  name: jfStep
+  inputs:
+    connection: 'hts2-arti-oidc'
+    command: 'jf rt ping'
+
+- task: PowerShell@2
+  inputs:
+    targetType: 'inline'
+    script: |
+      echo "OIDC Username: $($jfStep.oidc_user)"
+      echo "OIDC Token: $env:oidc_token"
+
 - task: JFrogGenericArtifacts@1
   inputs:
     command: 'Download'
