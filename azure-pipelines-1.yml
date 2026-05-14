@@ -1,0 +1,56 @@
+# Starter pipeline
+# Start with a minimal pipeline that you can customize to build and deploy your code.
+# Add steps that build, run tests, deploy, and more:
+# https://aka.ms/yaml
+
+trigger:
+- master
+
+pool:
+  vmImage: ubuntu-latest
+
+steps:
+- script: echo Hello, world!
+  displayName: 'Run a one-line script'
+
+- script: |
+    echo Add other tasks to build, test, and deploy your project.
+    echo See https://aka.ms/yaml
+  displayName: 'Run a multi-line script'
+
+- task: JFrogToolsInstaller@1
+  inputs:
+    artifactoryConnection: 'hts2-arti-token'
+    cliInstallationRepo: 'jfrog-cli-v2-new'
+    installCustomVersion: true
+    cliVersion: '2.103.0'
+    installExtractors: true
+    extractorsInstallationRepo: 'extractors'
+- task: JFrogMaven@1
+  inputs:
+    mavenPomFile: 'pom.xml'
+    goals: 'install'
+    artifactoryResolverService: 'hts2-arti-token'
+    targetResolveReleaseRepo: 'demo-libs-release'
+    targetResolveSnapshotRepo: 'demo-libs-snapshot'
+    artifactoryDeployService: 'hts2-arti-token'
+    targetDeployReleaseRepo: 'demo-libs-release'
+    targetDeploySnapshotRepo: 'demo-libs-snapshot'
+    collectBuildInfo: true
+    buildName: '$(Build.DefinitionName)'
+    buildNumber: '$(Build.BuildNumber)'
+    javaHomeOption: 'JDKVersion'
+
+- task: JFrogPublishBuildInfo@1
+  inputs:
+    artifactoryConnection: 'hts2-arti-token'
+    buildName: '$(Build.DefinitionName)'
+    buildNumber: '$(Build.BuildNumber)'
+
+- task: JFrogBuildScan@1
+  inputs:
+    xrayConnection: 'hts2-xray'
+    buildName: '$(Build.DefinitionName)'
+    buildNumber: '$(Build.BuildNumber)'
+    allowFailBuild: true
+    vuln: false
